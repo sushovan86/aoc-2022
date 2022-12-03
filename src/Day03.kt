@@ -23,7 +23,6 @@ fun main() {
             commonItems.firstOrNull()?.priority() ?: 0
         }
 
-
     fun part2(lines: List<String>): Int = lines
         .chunked(3)
         .sumOf { itemsOf3Elves: List<String> ->
