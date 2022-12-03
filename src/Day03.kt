@@ -10,8 +10,7 @@ fun main() {
         ""
     } else {
         val firstPartSet = this.toSet()
-        other
-            .filter(firstPartSet::contains)
+        other.filter(firstPartSet::contains)
             .toSet()
             .joinToString()
     }
