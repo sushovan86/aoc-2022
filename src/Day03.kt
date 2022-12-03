@@ -6,13 +6,15 @@ fun main() {
         else -> 0
     }
 
-    infix fun String.commonItemsIn(other: String) = this.toSet()
-        .let { firstStringSet ->
-            other
-                .filter(firstStringSet::contains)
-                .toSet()
-                .joinToString()
-        }
+    infix fun String.commonItemsIn(other: String) = if (this.isBlank() || other.isBlank()) {
+        ""
+    } else {
+        val firstPartSet = this.toSet()
+        other
+            .filter(firstPartSet::contains)
+            .toSet()
+            .joinToString()
+    }
 
     fun part1(lines: List<String>): Int = lines
         .sumOf { items: String ->
