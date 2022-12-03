@@ -15,10 +15,10 @@ fun main() {
         }
 
     fun part1(lines: List<String>): Int = lines
-        .sumOf {
-            val (firstPart, secondPart) = it.chunked(it.length / 2)
+        .sumOf { items: String ->
+            val (firstPart, secondPart) = items.chunked(items.length / 2)
             val commonItems = firstPart commonItemsIn secondPart
-            if (commonItems.isBlank()) 0 else commonItems[0].priority()
+            commonItems.firstOrNull()?.priority() ?: 0
         }
 
 
@@ -27,7 +27,7 @@ fun main() {
         .sumOf { itemsOf3Elves: List<String> ->
             val (elf1Items, elf2Items, elf3Items) = itemsOf3Elves
             val commonItems = elf1Items commonItemsIn elf2Items commonItemsIn elf3Items
-            if (commonItems.isBlank()) 0 else commonItems[0].priority()
+            commonItems.firstOrNull()?.priority() ?: 0
 
         }
 
