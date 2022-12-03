@@ -1,7 +1,7 @@
 interface CalculateScore {
-    fun selfMoveScore(): Int
+    fun moveScore(): Int
     fun outcome(): Int
-    fun totalScore(): Int = selfMoveScore() + outcome()
+    fun totalScore(): Int = moveScore() + outcome()
 }
 
 data class Round(
@@ -10,7 +10,7 @@ data class Round(
 )
 
 class Strategy1Score(private val round: Round) : CalculateScore {
-    override fun selfMoveScore(): Int = when (round.selfMove) {
+    override fun moveScore(): Int = when (round.selfMove) {
         "X" -> 1
         "Y" -> 2
         "Z" -> 3
@@ -29,7 +29,7 @@ class Strategy1Score(private val round: Round) : CalculateScore {
 }
 
 class Strategy2Score(private val round: Round) : CalculateScore {
-    override fun selfMoveScore(): Int = (round.opponentMove + round.selfMove).let { move ->
+    override fun moveScore(): Int = (round.opponentMove + round.selfMove).let { move ->
 
         when (move) {
             "AY", "BX", "CZ" -> 1
