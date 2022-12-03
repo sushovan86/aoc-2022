@@ -54,6 +54,16 @@ fun String.toRound() = this.split(" ")
 
 fun main() {
 
+    fun part2(lines: List<String>): Int = lines
+        .map(String::toRound)
+        .map(::Strategy2Score)
+        .sumOf(Strategy2Score::totalScore)
+
+    fun part1(lines: List<String>): Int = lines
+        .map(String::toRound)
+        .map(::Strategy1Score)
+        .sumOf(Strategy1Score::totalScore)
+
     val testInput = readInput("Day02_test")
     check(part1(testInput) == 15)
     check(part2(testInput) == 12)
@@ -63,12 +73,4 @@ fun main() {
     println(part2(actualInput))
 }
 
-fun part2(lines: List<String>): Int = lines
-    .map(String::toRound)
-    .map(::Strategy2Score)
-    .sumOf(Strategy2Score::totalScore)
 
-fun part1(lines: List<String>): Int = lines
-    .map(String::toRound)
-    .map(::Strategy1Score)
-    .sumOf(Strategy1Score::totalScore)
