@@ -3,7 +3,7 @@ fun main() {
     fun Char.priority(): Int = when (this) {
         in 'a'..'z' -> this - 'a' + 1
         in 'A'..'Z' -> this - 'A' + 27
-        else -> error("Invalid Input Character $this")
+        else -> 0
     }
 
     infix fun String.commonItemsIn(other: String) = this.toSet()
