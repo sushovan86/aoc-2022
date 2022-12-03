@@ -5,9 +5,9 @@ val EMPTY_LINE_SEPARATOR = System.lineSeparator().repeat(2)
 
 fun main() {
 
-    fun String.splitByEmptyLine() = this.split(EMPTY_LINE_SEPARATOR)
+    fun String.splitByEmptyLine() = this.splitToSequence(EMPTY_LINE_SEPARATOR)
 
-    fun topElves(size: Int, input: String): List<Int> {
+    fun topElvesCalories(numberOfElves: Int, input: String): List<Int> {
 
         val priorityQueue = PriorityQueue<Int>()
 
@@ -18,7 +18,7 @@ fun main() {
             .forEach {
 
                 priorityQueue.add(it)
-                if (priorityQueue.size > size) {
+                if (priorityQueue.size > numberOfElves) {
                     priorityQueue.poll()
                 }
             }
@@ -27,11 +27,11 @@ fun main() {
     }
 
     fun part1(input: String): Int {
-        return topElves(1, input).sum()
+        return topElvesCalories(1, input)[0]
     }
 
     fun part2(input: String): Int {
-        return topElves(3, input).sum()
+        return topElvesCalories(3, input).sum()
     }
 
 
