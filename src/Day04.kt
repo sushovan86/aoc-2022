@@ -5,16 +5,18 @@ fun main() {
         return start.toInt()..end.toInt()
     }
 
-    fun part1(lines: List<String>): Int = lines.count { line ->
-        val (firstElf, secondElf) = line.split(",")
-        (firstElf.itemsAsRange() subtract secondElf.itemsAsRange()).isEmpty()
-                || (secondElf.itemsAsRange() subtract firstElf.itemsAsRange()).isEmpty()
-    }
+    fun part1(lines: List<String>): Int = lines
+        .count { line ->
+            val (firstElf, secondElf) = line.split(",")
+            (firstElf.itemsAsRange() subtract secondElf.itemsAsRange()).isEmpty()
+                    || (secondElf.itemsAsRange() subtract firstElf.itemsAsRange()).isEmpty()
+        }
 
-    fun part2(lines: List<String>): Int = lines.count { line ->
-        val (firstElf, secondElf) = line.split(",")
-        (firstElf.itemsAsRange() intersect secondElf.itemsAsRange()).isNotEmpty()
-    }
+    fun part2(lines: List<String>): Int = lines
+        .count { line ->
+            val (firstElf, secondElf) = line.split(",")
+            (firstElf.itemsAsRange() intersect secondElf.itemsAsRange()).isNotEmpty()
+        }
 
     val testInput = readInput("Day04_test")
     check(part1(testInput) == 2)
