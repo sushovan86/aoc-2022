@@ -2,7 +2,7 @@ fun main() {
 
     fun String.itemsAsRange(): IntRange {
         val (start, end) = this.split("-")
-        return (start.toInt()..end.toInt())
+        return start.toInt()..end.toInt()
     }
 
     fun part1(lines: List<String>): Int = lines.count { line ->
