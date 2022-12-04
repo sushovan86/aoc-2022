@@ -1,21 +1,29 @@
 fun main() {
 
     fun String.itemsAsRange(): IntRange {
-        val (start, end) = this.split("-")
+        val (start, end) = split("-")
         return start.toInt()..end.toInt()
     }
 
+    fun String.splitByComma() = split(",")
+
+    infix fun IntRange.containsAll(other: IntRange): Boolean =
+        first <= other.first && last >= other.last
+
+    infix fun IntRange.containsSome(other: IntRange): Boolean =
+        last >= other.first && first <= other.last
+
     fun part1(lines: List<String>): Int = lines
-        .count { line ->
-            val (firstElf, secondElf) = line.split(",")
-            (firstElf.itemsAsRange() subtract secondElf.itemsAsRange()).isEmpty()
-                    || (secondElf.itemsAsRange() subtract firstElf.itemsAsRange()).isEmpty()
+        .map(String::splitByComma)
+        .count { (firstElf, secondElf) ->
+            firstElf.itemsAsRange() containsAll secondElf.itemsAsRange()
+                    || secondElf.itemsAsRange() containsAll firstElf.itemsAsRange()
         }
 
     fun part2(lines: List<String>): Int = lines
-        .count { line ->
-            val (firstElf, secondElf) = line.split(",")
-            (firstElf.itemsAsRange() intersect secondElf.itemsAsRange()).isNotEmpty()
+        .map(String::splitByComma)
+        .count { (firstElf, secondElf) ->
+            firstElf.itemsAsRange() containsSome secondElf.itemsAsRange()
         }
 
     val testInput = readInput("Day04_test")
