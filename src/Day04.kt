@@ -7,7 +7,7 @@ fun main() {
 
     fun String.splitByComma() = split(",")
 
-    infix fun IntRange.containsAll(other: IntRange): Boolean =
+    operator fun IntRange.contains(other: IntRange): Boolean =
         first <= other.first && last >= other.last
 
     infix fun IntRange.containsSome(other: IntRange): Boolean =
@@ -16,8 +16,8 @@ fun main() {
     fun part1(lines: List<String>): Int = lines
         .map(String::splitByComma)
         .count { (firstElf, secondElf) ->
-            firstElf.itemsAsRange() containsAll secondElf.itemsAsRange()
-                    || secondElf.itemsAsRange() containsAll firstElf.itemsAsRange()
+            firstElf.itemsAsRange() in secondElf.itemsAsRange()
+                    || secondElf.itemsAsRange() in firstElf.itemsAsRange()
         }
 
     fun part2(lines: List<String>): Int = lines
