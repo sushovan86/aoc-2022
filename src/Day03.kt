@@ -9,9 +9,7 @@ fun main() {
     infix fun String.commonItemsIn(other: String) = if (this.isBlank() || other.isBlank()) {
         ""
     } else {
-        val firstPartSet = this.toSet()
-        other.filter(firstPartSet::contains)
-            .toSet()
+        (this.toSet() intersect other.toSet())
             .joinToString()
     }
 
