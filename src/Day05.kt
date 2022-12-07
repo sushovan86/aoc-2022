@@ -6,9 +6,9 @@ import kotlin.collections.component2
 import kotlin.collections.component3
 import kotlin.collections.set
 
-typealias StackElement = ArrayDeque<Char>
+typealias StackElements = ArrayDeque<Char>
 
-fun StackElement.removeLast(n: Int): List<Char> {
+fun StackElements.removeLast(n: Int): List<Char> {
 
     val list = ArrayList<Char>()
     repeat(n) {
@@ -17,7 +17,7 @@ fun StackElement.removeLast(n: Int): List<Char> {
     return list
 }
 
-fun StackElement.addLast(element: List<Char>, maintainOrder: Boolean = false) {
+fun StackElements.addLast(element: List<Char>, maintainOrder: Boolean = false) {
     if (maintainOrder) {
         element.reversed().forEach { addLast(it) }
     } else {
@@ -30,40 +30,40 @@ typealias Instructions = List<Instruction>
 
 class WorkingStack {
 
-    private val stackElementByStackNumberMap = TreeMap<Int, StackElement>()
-    private val stackElementByPositionMap = mutableMapOf<Int, StackElement>()
+    private val stackElementsByStackNumberMap = TreeMap<Int, StackElements>()
+    private val stackElementsByPositionMap = mutableMapOf<Int, StackElements>()
 
     fun initializeStackWithCharacterPosition(stackNumber: Int, position: Int) {
-        val stackElement = StackElement()
-        stackElementByStackNumberMap[stackNumber] = stackElement
-        stackElementByPositionMap[position] = stackElement
+        val stackElements = StackElements()
+        stackElementsByStackNumberMap[stackNumber] = stackElements
+        stackElementsByPositionMap[position] = stackElements
     }
 
     fun addToStack(position: Int, stackValue: Char) {
-        stackElementByPositionMap[position]?.addLast(stackValue)
+        stackElementsByPositionMap[position]?.addLast(stackValue)
     }
 
     fun executeInstructions(instructions: Instructions, maintainOrder: Boolean = false) {
 
         for (instruction in instructions) {
 
-            val movedElements = stackElementByStackNumberMap[instruction.fromStack]
+            val movedElements = stackElementsByStackNumberMap[instruction.fromStack]
                 ?.removeLast(instruction.moveCount)
 
             movedElements?.apply {
-                stackElementByStackNumberMap[instruction.toStack]?.addLast(this, maintainOrder)
+                stackElementsByStackNumberMap[instruction.toStack]?.addLast(this, maintainOrder)
             }
         }
     }
 
-    fun topStackElements() = stackElementByStackNumberMap
+    fun topStackElements() = stackElementsByStackNumberMap
         .map { it.value.last() }
         .joinToString(separator = "")
 
     override fun toString(): String {
 
         val sb = StringBuilder()
-        stackElementByStackNumberMap.forEach {
+        stackElementsByStackNumberMap.forEach {
             sb.append("${it.key} --> ${it.value}")
             sb.append(System.lineSeparator())
         }
