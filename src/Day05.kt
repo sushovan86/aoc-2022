@@ -34,7 +34,7 @@ class WorkingStack {
     private val stackElementByPositionMap = mutableMapOf<Int, StackElement>()
 
     fun initializeStackWithCharacterPosition(stackNumber: Int, position: Int) {
-        val stackElement = StackElement();
+        val stackElement = StackElement()
         stackElementByStackNumberMap[stackNumber] = stackElement
         stackElementByPositionMap[position] = stackElement
     }
@@ -62,7 +62,7 @@ class WorkingStack {
 
     override fun toString(): String {
 
-        val sb = StringBuilder();
+        val sb = StringBuilder()
         stackElementByStackNumberMap.forEach {
             sb.append("${it.key} --> ${it.value}")
             sb.append(System.lineSeparator())
@@ -114,7 +114,7 @@ fun parseInstructions(instructionData: String): Instructions = instructionData
 
 fun parseWorkingStackData(workingStackData: String): WorkingStack {
 
-    val workingStack = WorkingStack();
+    val workingStack = WorkingStack()
 
     val lines = workingStackData.lines()
     lines.last()
