@@ -20,7 +20,7 @@ sealed class Node(
 class Directory(
     name: String,
     parent: Directory? = null,
-    private val children: MutableSet<Node> = mutableSetOf()
+    private val children: LinkedHashSet<Node> = LinkedHashSet()
 ) : Node(name, parent) {
 
     fun addDirectory(name: String) {
@@ -110,13 +110,14 @@ fun main() {
             .drop(2)
             .map(String::trim)
 
+//        println(inputLines)
+
         val root = Directory("/")
 
         var current: Directory = root
         for (command in inputLines) {
 
             when (command.substring(0, 2)) {
-
                 "cd" -> {
                     val commandParam = command.removePrefix("cd").trim()
                     current = when (commandParam) {
@@ -132,7 +133,6 @@ fun main() {
                 else -> error("Invalid command $command")
             }
         }
-
         return root
     }
 
