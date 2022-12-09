@@ -19,9 +19,10 @@ sealed class Node(
 
 class Directory(
     name: String,
-    parent: Directory? = null,
-    private val children: LinkedHashSet<Node> = LinkedHashSet()
+    parent: Directory? = null
 ) : Node(name, parent) {
+
+    private val children: LinkedHashSet<Node> = LinkedHashSet()
 
     fun addDirectory(name: String) {
         val newDirectory = Directory(name = name, parent = this)
