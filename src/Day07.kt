@@ -37,6 +37,7 @@ class Directory(
             return
         }
 
+        // Adjust size of parent directories
         this.size += fileSize
         var parentDirectory = this.parent
         while (parentDirectory != null) {
