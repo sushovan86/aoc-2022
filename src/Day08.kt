@@ -39,7 +39,7 @@ class Forest(private val treesHeight: Array<Array<Int>>) {
         return maxScenicScore
     }
 
-    private inline fun IntProgression.scenicScore(
+    private fun IntProgression.scenicScore(
         currentTreeHeight: Int,
         coordinateAt: (Int) -> Pair<Int, Int>
     ): Int {
