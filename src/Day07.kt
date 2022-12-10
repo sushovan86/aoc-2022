@@ -22,7 +22,7 @@ class Directory(
     parent: Directory? = null
 ) : Node(name, parent) {
 
-    private val children: LinkedHashSet<Node> = LinkedHashSet()
+    private val children: MutableSet<Node> = mutableSetOf()
 
     fun addDirectory(name: String) {
         val newDirectory = Directory(name = name, parent = this)
