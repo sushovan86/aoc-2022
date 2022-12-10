@@ -39,7 +39,10 @@ class Forest(private val treesHeight: Array<Array<Int>>) {
         return maxScenicScore
     }
 
-    private inline fun IntProgression.scenicScore(currentTreeHeight: Int, coordinateAt: (Int) -> Pair<Int, Int>): Int {
+    private inline fun IntProgression.scenicScore(
+        currentTreeHeight: Int,
+        coordinateAt: (Int) -> Pair<Int, Int>
+    ): Int {
 
         var offset = 0
         for (index in this) {
@@ -120,10 +123,8 @@ class Forest(private val treesHeight: Array<Array<Int>>) {
             }
             sb.append(System.lineSeparator())
         }
-
         return sb.toString()
     }
-
 }
 
 fun main() {
