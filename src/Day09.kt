@@ -80,7 +80,7 @@ class RopeBridge(instructionStringList: List<String>) {
             currentKnot = currentKnot follow previousKnot
             ropeKnots[knotIndex] = currentKnot
 
-            if (knotIndex == knotSize - 1) {
+            if (knotIndex == ropeKnots.lastIndex) {
                 tailPositions += currentKnot
             }
         }
@@ -103,5 +103,4 @@ fun main() {
 
     actualRopeBridge.processInstructions(10)
     println(actualRopeBridge.getTailPositionCount())
-
 }
