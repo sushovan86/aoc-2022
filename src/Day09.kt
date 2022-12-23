@@ -32,7 +32,7 @@ data class Point(val x: Int = 0, val y: Int = 0) {
     }
 }
 
-class RopeBridge {
+class RopeBridge private constructor() {
 
     private val instructions = mutableListOf<Pair<Direction, Int>>()
     private val tailPositions = mutableSetOf<Point>()
