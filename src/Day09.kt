@@ -16,61 +16,92 @@ data class Point(val x: Int = 0, val y: Int = 0) {
     infix fun moveTowards(movement: Direction): Point = when (movement) {
         Direction.LEFT -> copy(x = x - 1)
         Direction.RIGHT -> copy(x = x + 1)
-        Direction.UP -> copy(y = y - 1)
-        Direction.DOWN -> copy(y = y + 1)
+        Direction.UP -> copy(y = y + 1)
+        Direction.DOWN -> copy(y = y - 1)
     }
 
-    private infix fun isNeighbourTo(other: Point): Boolean =
+    infix fun isNeighbourTo(other: Point): Boolean =
         abs(x - other.x) <= 1 && abs(y - other.y) <= 1
 
-    infix fun follow(other: Point): Point = if (this isNeighbourTo other) {
-        this
-    } else {
+    infix fun follow(other: Point): Point {
 
         val xOffset = (other.x - x).coerceIn(-1..1)
         val yOffset = (other.y - y).coerceIn(-1..1)
 
-        Point(x + xOffset, y + yOffset)
+        return Point(x + xOffset, y + yOffset)
     }
 }
 
-class RopeBridge(private val instructions: List<String>) {
+class RopeBridge(instructionStringList: List<String>) {
 
-    private var head: Point = Point()
-    private var tail: Point = Point()
-
+    private val instructions = mutableListOf<Pair<Direction, Int>>()
     private val tailPositions = mutableSetOf<Point>()
 
-    private fun processEachMovement(movement: String, value: Int) {
-
-        val direction = DIRECTION_MAP[movement] ?: error("Invalid Movement $movement")
-
-        repeat(value) {
-            head = head moveTowards direction
-            tail = tail follow head
-            tailPositions += tail
+    init {
+        for (eachInstructionString in instructionStringList) {
+            val (movement, value) = eachInstructionString.split(" ")
+            val direction = DIRECTION_MAP[movement] ?: error("Invalid Movement $movement")
+            instructions += direction to value.toInt()
         }
     }
 
     fun getTailPositionCount() = tailPositions.size
 
-    fun processInstructions() = instructions
-        .map { it.split(" ") }
-        .forEach { (movement, value) -> processEachMovement(movement, value.toInt()) }
-        .let {
-            this
+    fun processInstructions(knotSize: Int): RopeBridge {
+
+        tailPositions.clear()
+
+        val ropeKnots = Array(knotSize) { Point() }
+        tailPositions += ropeKnots[knotSize - 1]
+
+        for ((direction, value) in instructions) {
+
+            repeat(value) {
+                processKnotsDirection(ropeKnots, direction, knotSize)
+            }
         }
+        return this
+    }
+
+    private fun processKnotsDirection(ropeKnots: Array<Point>, direction: Direction, knotSize: Int) {
+
+        // First index in the array is head, last index is tail
+        ropeKnots[0] = ropeKnots[0] moveTowards direction
+
+        for (knotIndex in 1 until knotSize) {
+
+            val previousKnot = ropeKnots[knotIndex - 1]
+            var currentKnot = ropeKnots[knotIndex]
+
+            if (currentKnot isNeighbourTo previousKnot) {
+                break
+            }
+
+            currentKnot = currentKnot follow previousKnot
+            ropeKnots[knotIndex] = currentKnot
+
+            if (knotIndex == knotSize - 1) {
+                tailPositions += currentKnot
+            }
+        }
+    }
 }
 
 fun main() {
 
-    val testInput = readInput("Day09_test")
+    val testInput1 = readInput("Day09_test1")
+    val testRopeBridge1 = RopeBridge(testInput1).processInstructions(2)
+    check(testRopeBridge1.getTailPositionCount() == 13)
 
-    val testRopeBridge = RopeBridge(testInput).processInstructions()
-    check(testRopeBridge.getTailPositionCount() == 13)
+    val testInput2 = readInput("Day09_test2")
+    val testRopeBridge2 = RopeBridge(testInput2).processInstructions(10)
+    check(testRopeBridge2.getTailPositionCount() == 36)
 
     val actualInput = readInput("Day09")
-    val actualRopeBridge = RopeBridge(actualInput).processInstructions()
+    val actualRopeBridge = RopeBridge(actualInput).processInstructions(2)
+    println(actualRopeBridge.getTailPositionCount())
+
+    actualRopeBridge.processInstructions(10)
     println(actualRopeBridge.getTailPositionCount())
 
 }
