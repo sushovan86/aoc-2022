@@ -32,16 +32,23 @@ data class Point(val x: Int = 0, val y: Int = 0) {
     }
 }
 
-class RopeBridge(instructionStringList: List<String>) {
+class RopeBridge {
 
     private val instructions = mutableListOf<Pair<Direction, Int>>()
     private val tailPositions = mutableSetOf<Point>()
 
-    init {
-        for (eachInstructionString in instructionStringList) {
-            val (movement, value) = eachInstructionString.split(" ")
-            val direction = DIRECTION_MAP[movement] ?: error("Invalid Movement $movement")
-            instructions += direction to value.toInt()
+    companion object {
+
+        fun loadData(instructionStringList: List<String>): RopeBridge {
+
+            val ropeBridge = RopeBridge()
+
+            for (eachInstructionString in instructionStringList) {
+                val (movement, value) = eachInstructionString.split(" ")
+                val direction = DIRECTION_MAP[movement] ?: error("Invalid Movement $movement")
+                ropeBridge.instructions += direction to value.toInt()
+            }
+            return ropeBridge
         }
     }
 
@@ -90,15 +97,19 @@ class RopeBridge(instructionStringList: List<String>) {
 fun main() {
 
     val testInput1 = readInput("Day09_test1")
-    val testRopeBridge1 = RopeBridge(testInput1).processInstructions(2)
+    val testRopeBridge1 = RopeBridge.loadData(testInput1)
+    testRopeBridge1.processInstructions(2)
     check(testRopeBridge1.getTailPositionCount() == 13)
 
     val testInput2 = readInput("Day09_test2")
-    val testRopeBridge2 = RopeBridge(testInput2).processInstructions(10)
+    val testRopeBridge2 = RopeBridge.loadData(testInput2)
+    testRopeBridge2.processInstructions(10)
     check(testRopeBridge2.getTailPositionCount() == 36)
 
     val actualInput = readInput("Day09")
-    val actualRopeBridge = RopeBridge(actualInput).processInstructions(2)
+    val actualRopeBridge = RopeBridge.loadData(actualInput)
+
+    actualRopeBridge.processInstructions(2)
     println(actualRopeBridge.getTailPositionCount())
 
     actualRopeBridge.processInstructions(10)
