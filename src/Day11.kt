@@ -29,8 +29,8 @@ class MonkeyProblem {
     }
 
     private val monkeyList: MutableList<Monkey> = mutableListOf()
-    private val commonDivisor by lazy {
-        monkeyList.map(Monkey::divisorPredicateOperand).reduce(Int::times)
+    private val commonDivisor: Long by lazy {
+        monkeyList.map { it.divisorPredicateOperand.toLong() }.reduce(Long::times)
     }
 
     val worryLevelDivisor: WorryLevelOperation = { old -> old / 3 }
