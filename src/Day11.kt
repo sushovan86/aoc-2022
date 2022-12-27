@@ -29,10 +29,12 @@ class MonkeyProblem {
     }
 
     private val monkeyList: MutableList<Monkey> = mutableListOf()
-    private fun commonDivisor() = monkeyList.map(Monkey::divisorPredicateOperand).reduce(Int::times)
+    private val commonDivisor by lazy {
+        monkeyList.map(Monkey::divisorPredicateOperand).reduce(Int::times)
+    }
 
     val worryLevelDivisor: WorryLevelOperation = { old -> old / 3 }
-    val worryLevelModulus: WorryLevelOperation = { old -> old % commonDivisor() }
+    val worryLevelModulus: WorryLevelOperation = { old -> old % commonDivisor }
 
     fun calculateMonkeyBusiness(rounds: Int, worryLevelOperation: WorryLevelOperation): Long {
 
