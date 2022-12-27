@@ -33,8 +33,8 @@ class MonkeyProblem {
         monkeyList.map { it.divisorPredicateOperand.toLong() }.reduce(Long::times)
     }
 
-    val worryLevelDivisor: WorryLevelOperation = { old -> old / 3 }
-    val worryLevelModulus: WorryLevelOperation = { old -> old % commonDivisor }
+    val worryLevelDivisor: WorryLevelOperation = { worryLevel -> worryLevel / 3 }
+    val worryLevelModulus: WorryLevelOperation = { worryLevel -> worryLevel % commonDivisor }
 
     fun calculateMonkeyBusiness(rounds: Int, worryLevelOperation: WorryLevelOperation): Long {
 
@@ -66,7 +66,6 @@ class MonkeyProblem {
     }
 
     companion object {
-
 
         private val MONKEY_INPUT_SEPARATOR: String = System.lineSeparator() + System.lineSeparator()
 
@@ -107,9 +106,7 @@ class MonkeyProblem {
             return monkeyProblem
         }
     }
-
 }
-
 
 fun main() {
 
