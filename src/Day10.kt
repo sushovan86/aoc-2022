@@ -37,11 +37,8 @@ class Signal private constructor(private val instructions: List<String>) {
             crtPosition = 0
         }
 
-        crtDisplay += if (register in (crtPosition - 1)..(crtPosition + 1)) {
-            "#"
-        } else {
-            "."
-        }
+        crtDisplay += if (register in (crtPosition - 1)..(crtPosition + 1)) "#" else "."
+
         cycle++
         crtPosition++
     }
