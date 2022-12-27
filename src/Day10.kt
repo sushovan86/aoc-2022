@@ -1,7 +1,7 @@
 class Signal private constructor(private val instructions: List<String>) {
 
     enum class STRATEGY {
-        PART1, PART2
+        RECORD_SIGNAL_STRENGTH, RENDER_CRT
     }
 
     private var cycle = 1
@@ -21,16 +21,16 @@ class Signal private constructor(private val instructions: List<String>) {
     }
 
     private fun recordSignal(strategy: STRATEGY) =
-        if (strategy == STRATEGY.PART1) recordSignalPart1() else recordSignalPart2()
+        if (strategy == STRATEGY.RECORD_SIGNAL_STRENGTH) calculateSignalStrength() else renderCRT()
 
-    private fun recordSignalPart1() {
+    private fun calculateSignalStrength() {
         if (cycle % 40 == 20) {
             signalStrength += (cycle * register)
         }
         cycle++
     }
 
-    private fun recordSignalPart2() {
+    private fun renderCRT() {
 
         if (cycle % 40 == 1) {
             crtDisplay += "\n"
@@ -80,10 +80,10 @@ fun main() {
     val testInputList = readInput("Day10_test")
     val signal = Signal.loadData(testInputList)
 
-    signal.process(Signal.STRATEGY.PART1)
+    signal.process(Signal.STRATEGY.RECORD_SIGNAL_STRENGTH)
     check(signal.signalStrength == 13140)
 
-    signal.process(strategy = Signal.STRATEGY.PART2)
+    signal.process(Signal.STRATEGY.RENDER_CRT)
     check(
         """
         |##..##..##..##..##..##..##..##..##..##..
@@ -98,9 +98,9 @@ fun main() {
     val actualInputList = readInput("Day10")
     val actualSignal = Signal.loadData(actualInputList)
 
-    actualSignal.process(Signal.STRATEGY.PART1)
+    actualSignal.process(Signal.STRATEGY.RECORD_SIGNAL_STRENGTH)
     println(actualSignal.signalStrength)
 
-    actualSignal.process(Signal.STRATEGY.PART2)
+    actualSignal.process(Signal.STRATEGY.RENDER_CRT)
     print(actualSignal.crtDisplay)
 }
