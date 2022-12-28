@@ -21,7 +21,7 @@ class HillClimbing private constructor(
         visited += start
     }
 
-    private fun getAdjacentCoordinates(coordinate: Coordinate) = buildList {
+    private fun getAdjacentCoordinates(coordinate: Coordinate) = buildList(4) {
 
         if (coordinate.y > 0) {
             add(coordinate.copy(y = coordinate.y - 1)) // UP
