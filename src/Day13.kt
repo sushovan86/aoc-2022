@@ -1,16 +1,16 @@
 class DistressSignal private constructor() {
 
-    data class PacketItem(
+    data class Packet(
         var integer: Int? = null,
-        val list: MutableList<PacketItem> = mutableListOf()
-    ) {
+        val list: MutableList<Packet> = mutableListOf()
+    ) : Comparable<Packet> {
 
         private val isInteger: Boolean
             get() = integer != null
 
-        private fun asList() = if (this.isInteger) listOf(PacketItem(integer)) else list
+        private fun asList() = if (this.isInteger) listOf(Packet(integer)) else list
 
-        operator fun minus(other: PacketItem): Int {
+        override infix operator fun compareTo(other: Packet): Int {
 
             if (isInteger && other.isInteger) {
                 return integer!! - other.integer!!
@@ -21,24 +21,32 @@ class DistressSignal private constructor() {
 
                 for (index in 0 until minOf(firstItemList.size, secondItemList.size)) {
 
-                    val item1: PacketItem = firstItemList[index]
-                    val item2: PacketItem = secondItemList[index]
+                    val item1: Packet = firstItemList[index]
+                    val item2: Packet = secondItemList[index]
 
-                    val diff = item1 - item2
-                    if (diff != 0) {
-                        return diff
+                    val comparison = item1 compareTo item2
+                    if (comparison != 0) {
+                        return comparison
                     }
                 }
                 return firstItemList.size - secondItemList.size
             }
         }
 
-        operator fun compareTo(other: PacketItem) = this - other
+        override fun equals(other: Any?): Boolean = (other as? Packet)?.let {
+            this compareTo it == 0
+        } ?: false
+
+        override fun hashCode(): Int {
+            var result = integer ?: 0
+            result = 31 * result + list.hashCode()
+            return result
+        }
 
         override fun toString(): String = if (isInteger) integer.toString() else list.toString()
     }
 
-    private val packetPairList = mutableListOf<Pair<PacketItem, PacketItem>>()
+    private val packetPairList = mutableListOf<Pair<Packet, Packet>>()
 
     companion object {
 
@@ -56,41 +64,41 @@ class DistressSignal private constructor() {
             return distressSignal
         }
 
-        private fun extractPacket(packetString: String): PacketItem {
+        private fun extractPacket(packetString: String): Packet {
 
-            val packetItemStack = ArrayDeque<PacketItem>()
-            packetItemStack += PacketItem()
+            val packetStack = ArrayDeque<Packet>()
+            packetStack += Packet()
 
             var probableIntegerStartIndex = 0
 
             for (index in packetString.indices) {
 
                 if (packetString[index] == '[') {
-                    val newPacketItem = PacketItem()
-                    packetItemStack.first().list += newPacketItem
-                    packetItemStack.addFirst(newPacketItem)
+                    val newPacket = Packet()
+                    packetStack.first().list += newPacket
+                    packetStack.addFirst(newPacket)
 
                     probableIntegerStartIndex = index
 
                 } else if (packetString[index] == ']') {
 
-                    addToList(packetString, probableIntegerStartIndex, index, packetItemStack)
-                    packetItemStack.removeFirst()
+                    addToList(packetString, probableIntegerStartIndex, index, packetStack)
+                    packetStack.removeFirst()
 
                 } else if (packetString[index] == ',') {
 
-                    addToList(packetString, probableIntegerStartIndex, index, packetItemStack)
+                    addToList(packetString, probableIntegerStartIndex, index, packetStack)
                     probableIntegerStartIndex = index
                 }
             }
-            return packetItemStack.first().list.first()
+            return packetStack.first().list.first()
         }
 
         private fun addToList(
             trimmedString: String,
             probableIntegerStartIndex: Int,
             index: Int,
-            packetItemStack: ArrayDeque<PacketItem>
+            packetStack: ArrayDeque<Packet>
         ) {
 
             if (index - probableIntegerStartIndex > 1) {
@@ -98,13 +106,13 @@ class DistressSignal private constructor() {
                 val integer = trimmedString.subSequence(probableIntegerStartIndex + 1, index)
                     .toString().trim().toIntOrNull()
                 if (integer != null) {
-                    packetItemStack.first().list += PacketItem(integer = integer)
+                    packetStack.first().list += Packet(integer = integer)
                 }
             }
         }
     }
 
-    fun correctPacketIndexSum() = packetPairList
+    fun getSumOfIndicesOfCorrectPairs(): Int = packetPairList
         .withIndex()
         .filter {
             val (first, second) = it.value
@@ -112,15 +120,34 @@ class DistressSignal private constructor() {
         }
         .sumOf { it.index + 1 }
 
+    fun getDecoderKeyOfSignal(): Int {
+
+        val dividerPacket1 = Packet(list = mutableListOf(Packet(list = mutableListOf(Packet(2)))))
+        val dividerPacket2 = Packet(list = mutableListOf(Packet(list = mutableListOf(Packet(6)))))
+
+        val listWithDividerPackets = mutableListOf(*packetPairList.toTypedArray()) +
+                (dividerPacket1 to dividerPacket2)
+
+        return listWithDividerPackets
+            .flatMap { it.toList() }
+            .asSequence()
+            .sorted()
+            .withIndex()
+            .filter { it.value == dividerPacket1 || it.value == dividerPacket2 }
+            .map { it.index + 1 }
+            .reduce { acc, index -> acc * index }
+    }
 }
 
 fun main() {
 
     val testInput = readInputAsText("Day13_test")
     val testDistressSignal = DistressSignal.load(testInput)
-    check(testDistressSignal.correctPacketIndexSum() == 13)
+    check(testDistressSignal.getSumOfIndicesOfCorrectPairs() == 13)
+    check(testDistressSignal.getDecoderKeyOfSignal() == 140)
 
     val actualInput = readInputAsText("Day13")
     val actualDistressSignal = DistressSignal.load(actualInput)
-    println(actualDistressSignal.correctPacketIndexSum())
+    println(actualDistressSignal.getSumOfIndicesOfCorrectPairs())
+    println(actualDistressSignal.getDecoderKeyOfSignal())
 }
