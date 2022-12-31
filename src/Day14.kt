@@ -3,27 +3,8 @@ import kotlin.math.sign
 
 class RegolithReservoir private constructor(private val rocksCoordinates: Set<Coordinate>) {
 
-    data class Coordinate(val x: Int = 0, val y: Int = 0) {
-
-        infix fun lineTo(other: Coordinate): List<Coordinate> {
-
-            val dx = other.x - x
-            val dy = other.y - y
-
-            val coordinateList = mutableListOf(this)
-
-            // Add In between coordinates
-            (1 until maxOf(abs(dx), abs(dy))).map {
-                coordinateList += Coordinate(x + it * dx.sign, y + it * dy.sign)
-            }
-            coordinateList += other
-            return coordinateList
-        }
-    }
-
     private val initialSandCoordinate = Coordinate(500, 0)
     private val restingSandCoordinates = mutableSetOf<Coordinate>()
-
     private val depth: Int = rocksCoordinates.maxOf { it.y }
 
     private fun Coordinate.nextSandCoordinate() = sequence {
@@ -32,25 +13,6 @@ class RegolithReservoir private constructor(private val rocksCoordinates: Set<Co
         yield(copy(x = x + 1, y = y + 1))
 
     }.firstOrNull { it !in rocksCoordinates && it !in restingSandCoordinates }
-
-    companion object {
-
-        fun load(inputList: List<String>): RegolithReservoir {
-
-            val rocksCoordinates = inputList.flatMap { line ->
-
-                line.split("->")
-                    .map {
-                        val (first, second) = it.split(",")
-                        Coordinate(first.trim().toInt(), second.trim().toInt())
-                    }
-                    .zipWithNext()
-                    .flatMap { (start, end) -> start lineTo end }
-
-            }.toSet()
-            return RegolithReservoir(rocksCoordinates)
-        }
-    }
 
     fun getUnitsOfSandInRest(): Int {
 
@@ -87,6 +49,43 @@ class RegolithReservoir private constructor(private val rocksCoordinates: Set<Co
             }
         }
         return restingSandCoordinates.size
+    }
+
+    data class Coordinate(val x: Int = 0, val y: Int = 0) {
+
+        infix fun lineTo(other: Coordinate): List<Coordinate> {
+
+            val dx = other.x - x
+            val dy = other.y - y
+
+            val coordinateList = mutableListOf(this)
+
+            // Add In between coordinates
+            (1 until maxOf(abs(dx), abs(dy))).map {
+                coordinateList += Coordinate(x + it * dx.sign, y + it * dy.sign)
+            }
+            coordinateList += other
+            return coordinateList
+        }
+    }
+
+    companion object {
+
+        fun load(inputList: List<String>): RegolithReservoir {
+
+            val rocksCoordinates = inputList.flatMap { line ->
+
+                line.split("->")
+                    .map {
+                        val (first, second) = it.split(",")
+                        Coordinate(first.trim().toInt(), second.trim().toInt())
+                    }
+                    .zipWithNext()
+                    .flatMap { (start, end) -> start lineTo end }
+
+            }.toSet()
+            return RegolithReservoir(rocksCoordinates)
+        }
     }
 }
 
