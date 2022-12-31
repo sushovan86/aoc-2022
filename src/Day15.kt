@@ -6,16 +6,17 @@ class BeaconExclusionZone private constructor(
     private val sensorBeaconDistances: List<SensorBeaconDistance>
 ) {
 
-    fun getNoBeaconPositionCountAtRow(rowNum: Int): Int = getCoverageRangePairsAtRow(rowNum)
-        .let { rangePairsAtRow ->
-            val beaconsAtRow = sensorBeaconDistances
-                .filter { it.beaconCoordinate.y == rowNum }
-                .distinctBy { it.beaconCoordinate.x }
-                .count()
-            val extremeLeftPointAtRow = rangePairsAtRow.minOf { it.first }
-            val extremeRightPointAtRow = rangePairsAtRow.maxOf { it.second }
-            (extremeRightPointAtRow - extremeLeftPointAtRow + 1) - beaconsAtRow
-        }
+    fun getNoBeaconPositionCountAtRow(rowNum: Int): Int =
+        getCoverageRangePairsAtRow(rowNum)
+            .let { rangePairsAtRow ->
+                val beaconsAtRow = sensorBeaconDistances
+                    .filter { it.beaconCoordinate.y == rowNum }
+                    .distinctBy { it.beaconCoordinate.x }
+                    .count()
+                val extremeLeftPointAtRow = rangePairsAtRow.minOf { it.first }
+                val extremeRightPointAtRow = rangePairsAtRow.maxOf { it.second }
+                (extremeRightPointAtRow - extremeLeftPointAtRow + 1) - beaconsAtRow
+            }
 
     fun getTuningFrequency(maxRow: Int): Long =
         (0..maxRow)
@@ -43,15 +44,16 @@ class BeaconExclusionZone private constructor(
         return null
     }
 
-    private fun getCoverageRangePairsAtRow(rowNum: Int) = sensorBeaconDistances
-        .mapNotNull { (sensor, _, distance) ->
+    private fun getCoverageRangePairsAtRow(rowNum: Int): List<Pair<Int, Int>> =
+        sensorBeaconDistances
+            .mapNotNull { (sensor, _, distance) ->
 
-            val offset = abs(sensor.y - rowNum)
-            val startRange = sensor.x - distance + offset
-            val endRange = sensor.x + distance - offset
+                val offset = abs(sensor.y - rowNum)
+                val startRange = sensor.x - distance + offset
+                val endRange = sensor.x + distance - offset
 
-            if (endRange >= startRange) startRange to endRange else null
-        }
+                if (endRange >= startRange) startRange to endRange else null
+            }
 
     data class SensorBeaconDistance(
         val sensorCoordinate: Coordinate,
@@ -91,7 +93,7 @@ fun main() {
     val testInput = readInput("Day15_test")
     val testBeaconExclusionZone = BeaconExclusionZone.load(testInput)
     check(testBeaconExclusionZone.getNoBeaconPositionCountAtRow(10) == 26)
-    check(testBeaconExclusionZone.getTuningFrequency(20) == 56000011L)
+    check(testBeaconExclusionZone.getTuningFrequency(20) == 56_000_011L)
 
     val input = readInput("Day15")
     val beaconExclusionZone = BeaconExclusionZone.load(input)
